@@ -1,0 +1,61 @@
+seed: 42
+num_folds: 5
+folds_dir: folds
+output_dir: video_outputs
+
+model:
+  model_name: videomae-base
+  # 每一折按 video_column 和 fold 加载已经训练好的单视频模型；
+  # 加载后只提取特征并冻结，训练阶段不更新这些 VideoMAE 参数。
+  checkpoint_template: video_outputs/{video_column}/fold_{fold}/best.pt
+  hidden_dim: 256
+  structured_hidden_dim: 64
+  dropout: 0.2
+
+data:
+  data_root: data
+  num_frames: 16
+  image_size: 224
+  sampling_strategy: uniform
+  num_workers: 8
+  feature_batch_size: 16
+  train_batch_size: 64
+  valid_batch_size: 128
+  # 当前数据中的全部六路视频，按此顺序拼接特征。
+  video_columns:
+    - 前屈和后仰_1
+    - 前屈和后仰_2
+    - 左右旋转_1
+    - 左右旋转_2
+    - 侧屈_1
+    - 侧屈_2
+
+structured:
+  # 结构化变量的编码、缺失值填补和标准化只在训练折拟合。
+  categorical_columns:
+    - 性别
+    - 种族
+    - age_group
+    - bmi_group
+  numerical_columns:
+    - age
+    - height_cm
+    - weight_kg
+    - BMI
+    - age_squared
+    - bmi_squared
+    - age_bmi
+
+optim:
+  epochs: 100
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  warmup_ratio: 0.1
+
+train:
+  use_amp: true
+  grad_accum_steps: 1
+  max_grad_norm: 1.0
+  log_interval: 20
+  early_stop_patience: 20
+  decision_threshold: 0.5

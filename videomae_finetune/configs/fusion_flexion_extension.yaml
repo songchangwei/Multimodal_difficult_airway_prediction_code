@@ -1,0 +1,37 @@
+seed: 42
+num_folds: 5
+folds_dir: folds
+output_dir: video_outputs
+
+model:
+  model_name: videomae-base
+  checkpoint_template: video_outputs/{video_column}/fold_{fold}/best.pt
+  hidden_dim: 256
+  dropout: 0.2
+
+data:
+  data_root: data
+  num_frames: 16
+  image_size: 224
+  sampling_strategy: uniform
+  num_workers: 8
+  feature_batch_size: 64
+  train_batch_size: 64
+  valid_batch_size: 128
+  video_columns:
+    - 前屈和后仰_1
+    - 前屈和后仰_2
+
+optim:
+  epochs: 100
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  warmup_ratio: 0.1
+
+train:
+  use_amp: true
+  grad_accum_steps: 1
+  max_grad_norm: 1.0
+  log_interval: 20
+  early_stop_patience: 20
+  decision_threshold: 0.5
