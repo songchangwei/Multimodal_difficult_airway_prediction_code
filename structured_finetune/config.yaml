@@ -1,0 +1,32 @@
+seed: 42
+num_folds: 5
+folds_dir: folds
+output_dir: structured_outputs_v2
+
+features:
+  categorical:
+    - 性别
+    - 种族
+    - age_group
+    - bmi_group
+  numerical:
+    - age
+    - height_cm
+    - weight_kg
+    - BMI
+    - age_squared
+    - bmi_squared
+    - age_bmi
+
+models:
+  - logistic_regression
+  - random_forest
+  - extra_trees
+  - hist_gradient_boosting
+  - gradient_boosting
+  - adaboost
+  - svm_rbf
+  - knn
+
+decision_threshold: 0.5
+threshold_strategy: train_youden
