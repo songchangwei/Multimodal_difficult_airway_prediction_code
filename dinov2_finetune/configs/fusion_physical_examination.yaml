@@ -1,0 +1,35 @@
+seed: 42
+num_folds: 5
+folds_dir: folds
+output_dir: outputs
+
+model:
+  model_name: dinov2-base
+  checkpoint_template: outputs/{image_column}/fold_{fold}/best.pt
+  hidden_dim: 256
+  dropout: 0.2
+
+data:
+  data_root: data
+  image_size: 224
+  num_workers: 4
+  feature_batch_size: 32
+  train_batch_size: 64
+  valid_batch_size: 128
+  image_columns:
+    - 外观检查_1
+    - 外观检查_2
+
+optim:
+  epochs: 100
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  warmup_ratio: 0.1
+
+train:
+  use_amp: true
+  grad_accum_steps: 1
+  max_grad_norm: 1.0
+  log_interval: 20
+  early_stop_patience: 20
+  decision_threshold: 0.5
